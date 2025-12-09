@@ -30,6 +30,7 @@ INSTALLED_APPS = [
 
     # Third app
     'rest_framework',
+    'rest_framework.authtoken',
 
     # local apps
     'accounts'
