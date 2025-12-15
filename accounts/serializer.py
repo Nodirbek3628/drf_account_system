@@ -9,7 +9,8 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        exclude = ['password','groups','user_permissions','is_staff','last_login','is_active']
+       
 
 class RegisterSerializer(serializers.ModelSerializer):
     confirm = serializers.CharField(max_length=128)
@@ -35,3 +36,24 @@ class RegisterSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=150)
     password = serializers.CharField(max_length=128)
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude = ['password','roles','user_permissions','is_staff','last_login','is_active']
+        extra_kwargs = {
+            'username':{
+                'required':False
+            }
+        }
+       
+class PasswordChangeSerializer(serializers.Serializer):
+    password = serializers.CharField(max_length=128)
+    new_password = serializers.CharField(max_length=128)
+    confirm_password = serializers.CharField(max_length=128)
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['confirm_password']:
+            raise serializers.ValidationError('new_password bilan bir xil kiriting')
+        return super().validate(attrs)
+
